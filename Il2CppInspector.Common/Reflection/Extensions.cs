@@ -97,7 +97,7 @@ namespace Il2CppInspector.Reflection
             var s = new StringBuilder();
             for (var i = 0; i < str.Length; i++)
                 if (str[i] < 32 || str[i] > 126)
-                    s.Append($"u{(int) str[i]:X4}");
+                    s.Append($"\\u{(int) str[i]:X4}");
                 else
                     s.Append(str[i]);
             str = s.ToString();
