@@ -159,21 +159,24 @@ namespace Il2CppInspector.Reflection
             return s.ToString();
         }
 
-        public static string ToCIdentifier(this string str, bool allowScopeQualifiers = false) {
+        public static string ToCIdentifier(this string str, bool allowScopeQualifiers, string allowSpecialChars) {
             // replace * with Ptr
             str = str.Replace("*", "Ptr");
             // escape non-ASCII characters
             var s = new StringBuilder();
             for (var i = 0; i < str.Length; i++)
-                if (str[i] < 32 || str[i] > 126)
-                    s.Append($"u{(int) str[i]:X4}");
+                if ((str[i] < 32 || str[i] > 126) && !allowSpecialChars.Contains(str[i]))
+                    s.Append($"u{(int)str[i]:X4}");
                 else
                     s.Append(str[i]);
             str = s.ToString();
             // replace illegal characters
-            str = Regex.Replace(str, allowScopeQualifiers? @"[^a-zA-Z0-9_\.:]" : "[^a-zA-Z0-9_]", "_");
+            string alphabetChars = "a-zA-Z";
+            alphabetChars += allowSpecialChars;
+            string validCharsRegex = $"{alphabetChars}0-9";
+            str = Regex.Replace(str, allowScopeQualifiers? $"[^{validCharsRegex}\\.:]" : $"[^{validCharsRegex}]", "_");
             // ensure identifier starts with a letter or _ (and is non-empty)
-            if (!Regex.IsMatch(str, "^[a-zA-Z_]"))
+            if (!Regex.IsMatch(str, $"^[{alphabetChars}_]"))
                 str = "_" + str;
             return str;
         }
