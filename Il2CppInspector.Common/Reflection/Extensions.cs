@@ -146,7 +146,7 @@ namespace Il2CppInspector.Reflection
             {
                 if (escapeChars.TryGetValue(chr, out var escaped))
                     s.Append(escaped);
-                else if (chr < 32 || chr > 126 && !allowSpecialChars.Contains(chr))
+                else if ((chr < 32 || chr > 126) && !allowSpecialChars.Contains(chr))
                 {
                     s.Append("\\u");
                     s.Append($"{(int) chr:X4}");
