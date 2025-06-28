@@ -27,7 +27,8 @@ namespace Il2CppInspector.Outputs
         public void Write(string outputFile) {
 
             using var fs = new FileStream(outputFile, FileMode.Create);
-            writer = new Utf8JsonWriter(fs, options: new JsonWriterOptions { Indented = true });
+            // Use System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping to allow Unicode characters
+            writer = new Utf8JsonWriter(fs, options: new JsonWriterOptions { Indented = true, Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping });
             writer.WriteStartObject();
 
             // Output address map of everything in the binary that we recognize
