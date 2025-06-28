@@ -138,7 +138,7 @@ namespace Il2CppInspector.Reflection
         };
 
         // Output a string in Python-friendly syntax
-        public static string ToEscapedString(this string str) {
+        public static string ToEscapedString(this string str, string allowSpecialChars = "") {
             // Replace standard escape characters
             var s = new StringBuilder();
 
@@ -146,7 +146,7 @@ namespace Il2CppInspector.Reflection
             {
                 if (escapeChars.TryGetValue(chr, out var escaped))
                     s.Append(escaped);
-                else if (chr < 32 || chr > 126)
+                else if (chr < 32 || chr > 126 && !allowSpecialChars.Contains(chr))
                 {
                     s.Append("\\u");
                     s.Append($"{(int) chr:X4}");
@@ -159,7 +159,7 @@ namespace Il2CppInspector.Reflection
             return s.ToString();
         }
 
-        public static string ToCIdentifier(this string str, bool allowScopeQualifiers = false, string allowSpecialChars) {
+        public static string ToCIdentifier(this string str, bool allowScopeQualifiers = false, string allowSpecialChars = "") {
             // replace * with Ptr
             str = str.Replace("*", "Ptr");
             // escape non-ASCII characters
