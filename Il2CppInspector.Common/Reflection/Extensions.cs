@@ -159,7 +159,7 @@ namespace Il2CppInspector.Reflection
             return s.ToString();
         }
 
-        public static string ToCIdentifier(this string str, bool allowScopeQualifiers, string allowSpecialChars) {
+        public static string ToCIdentifier(this string str, bool allowScopeQualifiers = false, string allowSpecialChars) {
             // replace * with Ptr
             str = str.Replace("*", "Ptr");
             // escape non-ASCII characters
