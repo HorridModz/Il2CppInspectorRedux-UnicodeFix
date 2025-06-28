@@ -1,13 +1,61 @@
-This is a fork with a simple patch I made to support Unicode characters in Metadata.json, as the original was replacing them with Unicode codepoints, breaking IDA (names like `u4E1Du4E09u4E0Bu4E19u4E03u4E1Eu4E1Fu4E07u4E10` are considered invalid. I edited Il2cppInspector to allow a whitelist of Unicode characters, which will come out as the literal characters insteasd of Unicode codepoints (though non-whitelisted characters will still not work).
+# The Fork
 
-To use, edit `ToCIdentifier` at Line 162 of [Extensions.cs]([Il2CppInspector.Common/Reflection/Extensions.cs](https://github.com/HorridModz/Il2CppInspectorRedux-UnicodeFix/blob/9866897756ef7d514f0f58aca068ac6820c2ca21/Il2CppInspector.Common/Reflection/Extensions.cs#L162)):
-```cs
-public static string ToCIdentifier(this string str, bool allowScopeQualifiers = false, string allowSpecialChars = "丕世东专丛三丐丄丗丈七丒上丘丟丁丝业丏一丙丌丂不下与万且丅丑丞丆年月日년월일시분초時时分秒") {
+This is a fork of [Il2cppInspectorRedux](https://github.com/LukeFZ/Il2CppInspectorRedux) with a simple patch I made to support Unicode characters in Metadata.json, as the original was replacing them with Unicode codepoints, breaking IDA (names like `u4E1Du4E09u4E0Bu4E19u4E03u4E1Eu4E1Fu4E07u4E10` are considered invalid. I edited Il2cppInspector to allow a whitelist of Unicode characters, which will come out as the literal characters insteasd of Unicode codepoints (though non-whitelisted characters will still not work).
+
+To use, run `!specialcharstweak.py` and enter your characters, then build Il2cppInspector with `dotnet publish -c Release`:
+
+```sh
+py !specialcharstweak.py
+dotnet publish -c Release
 ```
 
-Change `allowSpecialChars` to the Unicode chars you want to allow.
+**IDA will not allow these characters by default. To make it allow them, go to the `ida.cfg` file in IDA's installation directory (`IDA-Pro-7.6\IDA Pro 7.6\cfg\ida.cfg`) and add them to `NameChars` and `TypeNameChars`**:
 
-Then, simply build Il2cppInspector with `dotnet publish -c Release`.
+```c
+// Line 700 (may vary for you)
+
+NameChars =
+        "$?@"           // asm specific character
+        "_0123456789"
+        "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+        "abcdefghijklmnopqrstuvwxyz",
+        // This would enable common Chinese characters in identifiers:
+        // Culture_CJK_Unified_Ideographs,
+        CURRENT_CULTURE;
+
+// Line 721 (may vary for you)
+
+TypeNameChars =
+        "_:$()`'{}"
+        "_0123456789"
+        "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+        "abcdefghijklmnopqrstuvwxyz";
+```
+
+Change to:
+
+```c
+NameChars =
+        "$?@"           // asm specific character
+        "_0123456789"
+        "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+        "abcdefghijklmnopqrstuvwxyz",
+		"YOURCHARACTERS",
+        // This would enable common Chinese characters in identifiers:
+        // Culture_CJK_Unified_Ideographs,
+        CURRENT_CULTURE;
+```
+
+and
+
+```c
+TypeNameChars =
+        "_:$()`'{}"
+        "_0123456789"
+        "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+        "abcdefghijklmnopqrstuvwxyz",
+		"YOURCHARACTERS";
+```
 
 # Il2CppInspectorRedux 2023.1
 
